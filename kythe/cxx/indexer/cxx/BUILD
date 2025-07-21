@@ -164,6 +164,7 @@ cc_library(
         "-Wno-unused-variable",
         "-Wno-implicit-fallthrough",
     ],
+    visibility = ["//visibility:public"],
     deps = [
         ":kythe_claim_client",
         "//kythe/cxx/common:lib",
@@ -492,6 +493,7 @@ cc_library(
         "-Wno-unused-variable",
         "-Wno-implicit-fallthrough",
     ],
+    visibility = ["//visibility:public"],
     deps = [
         ":clang_utils",
         ":google_flags_library_support",

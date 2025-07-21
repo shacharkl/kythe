@@ -1,17 +1,8 @@
 package(default_visibility = ["//visibility:public"])
 
-package_group(
-    name = "default_visibility",
-    packages = [
-        "//kythe/...",
-        "//tools/...",
-    ],
-)
-
-package_group(
-    name = "proto_visibility",
-    includes = [":default_visibility"],
-)
+load("//:setup.bzl", "kythe_visibility_groups")
+load("//:external_visibility.bzl", "EXTERNAL_VISIBILITY")
+kythe_visibility_groups(external_visibility = EXTERNAL_VISIBILITY)
 
 filegroup(
     name = "srcs",

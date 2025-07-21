@@ -22,10 +22,36 @@ def github_archive(name, repo_name, commit, kind = "zip", strip_prefix = "", **k
         **kwargs
     )
 
-def kythe_rule_repositories():
+def kythe_visibility_groups(base_workspace = "", external_visibility = []):
+    """Defines visibility groups for kythe with parameterized workspace support.
+    
+    Args:
+        base_workspace: The workspace prefix to use for kythe resources (default: "")
+        external_visibility: Additional packages to grant access to kythe targets (default: [])
+    """
+    packages = [
+        base_workspace + "//kythe/...",
+        base_workspace + "//tools/...",
+    ] + external_visibility
+    
+    native.package_group(
+        name = "default_visibility", 
+        packages = packages,
+    )
+
+    native.package_group(
+        name = "proto_visibility",
+        includes = [":default_visibility"],
+    )
+
+
+def kythe_rule_repositories(base_workspace = "@io_kythe"):
     """Defines external repositories for Kythe Bazel rules.
 
     These repositories must be loaded before calling external.bzl%kythe_dependencies.
+    
+    Args:
+        base_workspace: The workspace prefix to use for kythe resources (default: "@io_kythe")
     """
     maybe(
         http_archive,
@@ -95,7 +121,7 @@ def kythe_rule_repositories():
         patch_args = ["-p1"],
         patches = [
             # Add support for per-file go_test targets.
-            "//third_party:gazelle-0.32.0-go_test_mode.patch",
+            base_workspace + "//third_party:gazelle-0.32.0-go_test_mode.patch",
         ],
     )
 
@@ -158,7 +184,7 @@ def kythe_rule_repositories():
             "https://github.com/bazelruby/rules_ruby/archive/v0.4.1.zip",
         ],
         patches = [
-            "@io_kythe//third_party:rules_ruby_allow_empty.patch",
+            base_workspace + "//third_party:rules_ruby_allow_empty.patch",
         ],
         patch_args = ["-p1"],
     )
@@ -178,7 +204,7 @@ def kythe_rule_repositories():
         name = "llvm-raw",
         build_file_content = "#empty",
         patch_args = ["-p1"],
-        patches = ["@io_kythe//third_party:llvm-bazel-glob.patch"],
+        patches = [base_workspace + "//third_party:llvm-bazel-glob.patch"],
     )
 
     maybe(

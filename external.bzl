@@ -64,7 +64,7 @@ def _rule_dependencies():
 def _gazelle_ignore(**kwargs):
     """Dummy macro which causes gazelle to see a repository as already defined."""
 
-def _common_dependencies():
+def _common_dependencies(base_workspace):
     # Rather than pull down the entire Bazel source repository for a single file,
     # just grab the files we need and use them locally.
     maybe(
@@ -84,12 +84,12 @@ def _common_dependencies():
             "src/main/protobuf/test_status.proto",
         ],
         overlay = {
-            "@io_kythe//third_party/bazel:root.BUILD": "BUILD",
-            "@io_kythe//third_party/bazel:javac_options.BUILD": "src/java_tools/buildjar/java/com/google/devtools/build/buildjar/BUILD",
+            base_workspace + "//third_party/bazel:root.BUILD": "BUILD",
+            base_workspace + "//third_party/bazel:javac_options.BUILD": "src/java_tools/buildjar/java/com/google/devtools/build/buildjar/BUILD",
         },
     )
 
-def _cc_dependencies():
+def _cc_dependencies(base_workspace):
     maybe(
         http_archive,
         name = "llvm_zstd",
@@ -112,7 +112,7 @@ def _cc_dependencies():
     maybe(
         http_archive,
         name = "org_sourceware_libffi",
-        build_file = "@io_kythe//third_party:libffi.BUILD",
+        build_file = base_workspace + "//third_party:libffi.BUILD",
         sha256 = "653ffdfc67fbb865f39c7e5df2a071c0beb17206ebfb0a9ecb18a18f63f6b263",  # 2019-11-02
         strip_prefix = "libffi-3.3-rc2",
         urls = ["https://github.com/libffi/libffi/releases/download/v3.3-rc2/libffi-3.3-rc2.tar.gz"],
@@ -122,21 +122,21 @@ def _cc_dependencies():
         http_archive,
         name = "souffle",
         urls = ["https://github.com/souffle-lang/souffle/archive/cc8ea091721fcfb60bed45a0edf571ad9d0c58a5.zip"],
-        build_file = "@io_kythe//third_party:souffle.BUILD",
+        build_file = base_workspace + "//third_party:souffle.BUILD",
         sha256 = "8e914fc7ccd7d846d9e3073ecfb185fcb4a85ada51cd8ab04283052e48ebfd62",
         strip_prefix = "souffle-cc8ea091721fcfb60bed45a0edf571ad9d0c58a5",
         patch_args = ["-p0"],
         patches = [
-            "@io_kythe//third_party:souffle_remove_config.patch",
-            "@io_kythe//third_party:souffle_filesystem.patch",
-            "@io_kythe//third_party:souffle_atomic.patch",
+            base_workspace + "//third_party:souffle_remove_config.patch",
+            base_workspace + "//third_party:souffle_filesystem.patch",
+            base_workspace + "//third_party:souffle_atomic.patch",
         ],
     )
 
     maybe(
         http_archive,
         name = "net_zlib",
-        build_file = "@io_kythe//third_party:zlib.BUILD",
+        build_file = base_workspace + "//third_party:zlib.BUILD",
         sha256 = "d14c38e313afc35a9a8760dadf26042f51ea0f5d154b0630a31da0540107fb98",
         strip_prefix = "zlib-1.2.13",
         urls = [
@@ -148,7 +148,7 @@ def _cc_dependencies():
     maybe(
         http_archive,
         name = "org_libzip",
-        build_file = "@io_kythe//third_party:libzip.BUILD",
+        build_file = base_workspace + "//third_party:libzip.BUILD",
         strip_prefix = "libzip-1.7.3",
         sha256 = "0e2276c550c5a310d4ebf3a2c3dfc43fb3b4602a072ff625842ad4f3238cb9cc",
         urls = [
@@ -175,7 +175,7 @@ def _cc_dependencies():
     maybe(
         http_archive,
         name = "com_github_tencent_rapidjson",
-        build_file = "@io_kythe//third_party:rapidjson.BUILD",
+        build_file = base_workspace + "//third_party:rapidjson.BUILD",
         sha256 = "8e00c38829d6785a2dfb951bb87c6974fa07dfe488aa5b25deec4b8bc0f6a3ab",
         strip_prefix = "rapidjson-1.1.0",
         urls = [
@@ -183,7 +183,7 @@ def _cc_dependencies():
             "https://github.com/Tencent/rapidjson/archive/v1.1.0.zip",
         ],
         patches = [
-            "@io_kythe//third_party:rapidjson_assignment.patch",
+            base_workspace + "//third_party:rapidjson_assignment.patch",
         ],
     )
 
@@ -213,7 +213,7 @@ def _cc_dependencies():
         strip_prefix = "brotli-1.0.9",
         patch_args = ["-p1"],
         patches = [
-            "@io_kythe//third_party:brotli/brotli-1.0.7-int-float-conversion.patch",
+            base_workspace + "//third_party:brotli/brotli-1.0.7-int-float-conversion.patch",
         ],
         urls = [
             "https://mirror.bazel.build/github.com/google/brotli/archive/v1.0.9.tar.gz",
@@ -231,7 +231,7 @@ def _cc_dependencies():
     maybe(
         http_archive,
         name = "org_libmemcached_libmemcached",
-        build_file = "@io_kythe//third_party:libmemcached.BUILD",
+        build_file = base_workspace + "//third_party:libmemcached.BUILD",
         sha256 = "e22c0bb032fde08f53de9ffbc5a128233041d9f33b5de022c0978a2149885f82",
         strip_prefix = "libmemcached-1.0.18",
         urls = [
@@ -243,7 +243,7 @@ def _cc_dependencies():
     maybe(
         http_archive,
         name = "se_haxx_curl",
-        build_file = "@io_kythe//third_party:curl.BUILD",
+        build_file = base_workspace + "//third_party:curl.BUILD",
         sha256 = "ff3e80c1ca6a068428726cd7dd19037a47cc538ce58ef61c59587191039b2ca6",
         strip_prefix = "curl-7.49.1",
         urls = [
@@ -262,7 +262,7 @@ def _cc_dependencies():
     maybe(
         http_archive,
         name = "com_github_stedolan_jq",
-        build_file = "@io_kythe//third_party:jq.BUILD",
+        build_file = base_workspace + "//third_party:jq.BUILD",
         sha256 = "998c41babeb57b4304e65b4eb73094279b3ab1e63801b6b4bddd487ce009b39d",
         strip_prefix = "jq-1.4",
         urls = [
@@ -275,14 +275,14 @@ def _cc_dependencies():
         github_archive,
         name = "com_github_google_snappy",
         repo_name = "google/snappy",
-        build_file = "@io_kythe//third_party:snappy.BUILD",
+        build_file = base_workspace + "//third_party:snappy.BUILD",
         commit = "1.1.8",
     )
 
     maybe(
         http_archive,
         name = "com_github_google_leveldb",
-        build_file = "@io_kythe//third_party:leveldb.BUILD",
+        build_file = base_workspace + "//third_party:leveldb.BUILD",
         sha256 = "5b2bd7a91489095ad54bb81ca6544561025b48ec6d19cc955325f96755d88414",
         strip_prefix = "leveldb-1.20",
         urls = [
@@ -301,7 +301,7 @@ def _cc_dependencies():
     lexyacc_configure()
     cxx_extractor_register_toolchains()
 
-def _java_dependencies():
+def _java_dependencies(base_workspace):
     maven_install(
         name = "maven",
         artifacts = [
@@ -338,7 +338,7 @@ def _java_dependencies():
         maven_install_json = "//:maven_install.json",
     )
 
-def _go_dependencies():
+def _go_dependencies(base_workspace):
     _gazelle_ignore(
         name = "com_github_bazelbuild_rules_go",
         actual = "io_bazel_rules_go",
@@ -377,7 +377,7 @@ def _go_dependencies():
         importpath = "github.com/apache/beam",
         patch_args = ["-p1"],
         patches = [
-            "@io_kythe//third_party/go:add_export_license.patch",
+            base_workspace + "//third_party/go:add_export_license.patch",
         ],
         sum = "h1:7C2/JDa+fiRJs8kAcfCHxVTf0xxwKsCFQYDMoRdr/dk=",
         version = "v2.31.0+incompatible",
@@ -400,7 +400,7 @@ def _go_dependencies():
         importpath = "github.com/beevik/etree",
         patch_args = ["-p1"],
         patches = [
-            "@io_kythe//third_party/go:add_export_license.patch",
+            base_workspace + "//third_party/go:add_export_license.patch",
         ],
         sum = "h1:l7WETslUG/T+xOPs47dtd6jov2Ii/8/OjCldk5fYfQw=",
         version = "v1.2.0",
@@ -451,8 +451,8 @@ def _go_dependencies():
         importpath = "github.com/DataDog/zstd",
         patch_args = ["-p1"],
         patches = [
-            "@io_kythe//third_party/go:add_export_license.patch",
-            "@io_kythe//third_party/go:datadog-zstd.patch",
+            base_workspace + "//third_party/go:add_export_license.patch",
+            base_workspace + "//third_party/go:datadog-zstd.patch",
         ],
         sum = "h1:oWf5W7GtOLgp6bciQYDmhHHjdhYkALu6S/5Ni9ZgSvQ=",
         version = "v1.5.5",
@@ -510,7 +510,7 @@ def _go_dependencies():
         importpath = "github.com/golang/protobuf",
         patch_args = ["-p1"],
         patches = [
-            "@io_kythe//third_party/go:new_export_license.patch",
+            base_workspace + "//third_party/go:new_export_license.patch",
         ],
         sum = "h1:KhyjKVUg7Usr/dYsdSqoFveMYd5ko72D+zANwlG1mmg=",
         version = "v1.5.3",
@@ -521,7 +521,7 @@ def _go_dependencies():
         importpath = "github.com/golang/snappy",
         patch_args = ["-p1"],
         patches = [
-            "@io_kythe//third_party/go:add_export_license.patch",
+            base_workspace + "//third_party/go:add_export_license.patch",
         ],
         sum = "h1:yAGX7huGHXlcLOEtBnF4w7FQwA26wojNCwOYAEhLjQM=",
         version = "v0.0.4",
@@ -546,7 +546,7 @@ def _go_dependencies():
         importpath = "github.com/google/go-cmp",
         patch_args = ["-p1"],
         patches = [
-            "@io_kythe//third_party/go:add_export_license.patch",
+            base_workspace + "//third_party/go:add_export_license.patch",
         ],
         sum = "h1:ofyhxvXcZhMsU5ulbFiLKl/XBFqE1GSq7atu8tAmTRI=",
         version = "v0.6.0",
@@ -583,7 +583,7 @@ def _go_dependencies():
         importpath = "github.com/google/subcommands",
         patch_args = ["-p1"],
         patches = [
-            "@io_kythe//third_party/go:add_export_license.patch",
+            base_workspace + "//third_party/go:add_export_license.patch",
         ],
         sum = "h1:vWQspBTo2nEqTUFita5/KeEWlUL8kQObDFbub/EN9oE=",
         version = "v1.2.0",
@@ -593,7 +593,7 @@ def _go_dependencies():
         importpath = "github.com/google/uuid",
         patch_args = ["-p1"],
         patches = [
-            "@io_kythe//third_party/go:add_export_license.patch",
+            base_workspace + "//third_party/go:add_export_license.patch",
         ],
         sum = "h1:KjJaJ9iWZ3jOFZIf1Lqf4laDRCasjl0BCmnEGxkdLb4=",
         version = "v1.3.1",
@@ -611,7 +611,7 @@ def _go_dependencies():
         importpath = "github.com/googleapis/gax-go/v2",
         patch_args = ["-p1"],
         patches = [
-            "@io_kythe//third_party/go:add_export_license.patch",
+            base_workspace + "//third_party/go:add_export_license.patch",
         ],
         sum = "h1:A+gCJKdRfqXkr+BIRGtZLibNXf0m1f9E4HG56etFpas=",
         version = "v2.12.0",
@@ -628,7 +628,7 @@ def _go_dependencies():
         importpath = "github.com/hanwen/go-fuse",
         patch_args = ["-p1"],
         patches = [
-            "@io_kythe//third_party/go:add_export_license.patch",
+            base_workspace + "//third_party/go:add_export_license.patch",
         ],
         sum = "h1:GxS9Zrn6c35/BnfiVsZVWmsG803xwE7eVRDvcf/BEVc=",
         version = "v1.0.0",
@@ -646,7 +646,7 @@ def _go_dependencies():
         importpath = "github.com/jmhodges/levigo",
         patch_args = ["-p1"],
         patches = [
-            "@io_kythe//third_party/go:levigo.patch",
+            base_workspace + "//third_party/go:levigo.patch",
         ],
         sum = "h1:q5EC36kV79HWeTBWsod3mG11EgStG3qArTKcvlksN1U=",
         version = "v1.0.0",
@@ -681,7 +681,7 @@ def _go_dependencies():
         importpath = "github.com/minio/highwayhash",
         patch_args = ["-p1"],
         patches = [
-            "@io_kythe//third_party/go:add_export_license.patch",
+            base_workspace + "//third_party/go:add_export_license.patch",
         ],
         sum = "h1:Aak5U0nElisjDCfPSG79Tgzkn2gl66NxOMspRrKnA/g=",
         version = "v1.0.2",
@@ -705,7 +705,7 @@ def _go_dependencies():
         importpath = "github.com/pkg/errors",
         patch_args = ["-p1"],
         patches = [
-            "@io_kythe//third_party/go:add_export_license.patch",
+            base_workspace + "//third_party/go:add_export_license.patch",
         ],
         sum = "h1:FEBLx1zS214owpjy7qsBeixbURkuhQAwrK5UwLGTwt4=",
         version = "v0.9.1",
@@ -741,7 +741,7 @@ def _go_dependencies():
         importpath = "github.com/sergi/go-diff",
         patch_args = ["-p1"],
         patches = [
-            "@io_kythe//third_party/go:add_export_license.patch",
+            base_workspace + "//third_party/go:add_export_license.patch",
         ],
         sum = "h1:xkr+Oxo4BOQKmkn/B9eMK0g5Kg/983T9DqqPHwYqD+8=",
         version = "v1.3.1",
@@ -751,7 +751,7 @@ def _go_dependencies():
         importpath = "github.com/sourcegraph/go-langserver",
         patch_args = ["-p1"],
         patches = [
-            "@io_kythe//third_party/go:add_export_license.patch",
+            base_workspace + "//third_party/go:add_export_license.patch",
         ],
         sum = "h1:lj2sRU7ZMIkW372IDVGb6fE8VAY4c/EMsiDzrB9vmiU=",
         version = "v2.0.0+incompatible",
@@ -761,7 +761,7 @@ def _go_dependencies():
         importpath = "github.com/sourcegraph/jsonrpc2",
         patch_args = ["-p1"],
         patches = [
-            "@io_kythe//third_party/go:add_export_license.patch",
+            base_workspace + "//third_party/go:add_export_license.patch",
         ],
         sum = "h1:KjN/dC4fP6aN9030MZCJs9WQbTOjWHhrtKVpzzSrr/U=",
         version = "v0.2.0",
@@ -791,7 +791,7 @@ def _go_dependencies():
         importpath = "cloud.google.com/go",
         patch_args = ["-p1"],
         patches = [
-            "@io_kythe//third_party/go:add_export_license.patch",
+            base_workspace + "//third_party/go:add_export_license.patch",
         ],
         sum = "h1:tyNdfIxjzaWctIiLYOTalaLKZ17SI44SKFW26QbOhME=",
         version = "v0.110.8",
@@ -1532,7 +1532,7 @@ def _go_dependencies():
         importpath = "gopkg.in/yaml.v2",
         patch_args = ["-p1"],
         patches = [
-            "@io_kythe//third_party/go:add_export_license.patch",
+            base_workspace + "//third_party/go:add_export_license.patch",
         ],
         sum = "h1:D8xgwECY7CYvx+Y2n4sBz93Jn9JRvxdiyyo8CTfuKaY=",
         version = "v2.4.0",
@@ -1549,7 +1549,7 @@ def _go_dependencies():
         importpath = "sigs.k8s.io/yaml",
         patch_args = ["-p1"],
         patches = [
-            "@io_kythe//third_party/go:add_export_license.patch",
+            base_workspace + "//third_party/go:add_export_license.patch",
         ],
         sum = "h1:a2VclLzOGrwOHDiV8EfBGhvjHvP46CtW5j6POvhYGGo=",
         version = "v1.3.0",
@@ -1559,7 +1559,7 @@ def _go_dependencies():
         importpath = "go.opencensus.io",
         patch_args = ["-p1"],
         patches = [
-            "@io_kythe//third_party/go:add_export_license.patch",
+            base_workspace + "//third_party/go:add_export_license.patch",
         ],
         sum = "h1:y73uSU6J157QMP2kn2r30vwW1A2W2WFwSCGnAVxeaD0=",
         version = "v0.24.0",
@@ -1576,7 +1576,7 @@ def _go_dependencies():
         importpath = "bitbucket.org/creachadair/shell",
         patch_args = ["-p1"],
         patches = [
-            "@io_kythe//third_party/go:add_export_license.patch",
+            base_workspace + "//third_party/go:add_export_license.patch",
         ],
         sum = "h1:Z96pB6DkSb7F3Y3BBnJeOZH2gazyMTWlvecSD4vDqfk=",
         version = "v0.0.7",
@@ -1586,7 +1586,7 @@ def _go_dependencies():
         importpath = "bitbucket.org/creachadair/stringset",
         patch_args = ["-p1"],
         patches = [
-            "@io_kythe//third_party/go:add_export_license.patch",
+            base_workspace + "//third_party/go:add_export_license.patch",
         ],
         sum = "h1:6Sv4CCv14Wm+OipW4f3tWOb0SQVpBDLW0knnJqUnmZ8=",
         version = "v0.0.11",
@@ -1597,7 +1597,7 @@ def _go_dependencies():
         importpath = "google.golang.org/api",
         patch_args = ["-p1"],
         patches = [
-            "@io_kythe//third_party/go:add_export_license.patch",
+            base_workspace + "//third_party/go:add_export_license.patch",
         ],
         sum = "h1:9aBYT4vQXt9dhCuLNfwfd3zpwu8atg0yPkjBymwSrOM=",
         version = "v0.146.0",
@@ -1639,7 +1639,7 @@ def _go_dependencies():
         importpath = "google.golang.org/grpc",
         patch_args = ["-p1"],
         patches = [
-            "@io_kythe//third_party/go:add_export_license.patch",
+            base_workspace + "//third_party/go:add_export_license.patch",
         ],
         sum = "h1:BjnpXut1btbtgN/6sp+brB2Kbm2LjNXnidYujAVbSoQ=",
         version = "v1.58.3",
@@ -1682,7 +1682,7 @@ def _go_dependencies():
         importpath = "golang.org/x/net",
         patch_args = ["-p1"],
         patches = [
-            "@io_kythe//third_party/go:add_export_license.patch",
+            base_workspace + "//third_party/go:add_export_license.patch",
         ],
         sum = "h1:7EYJ93RZ9vYSZAIb2x3lnuvqO5zneoD6IvWjuhfxjTs=",
         version = "v0.23.0",
@@ -1693,7 +1693,7 @@ def _go_dependencies():
         importpath = "golang.org/x/oauth2",
         patch_args = ["-p1"],
         patches = [
-            "@io_kythe//third_party/go:add_export_license.patch",
+            base_workspace + "//third_party/go:add_export_license.patch",
         ],
         sum = "h1:jDDenyj+WgFtmV3zYVoi8aE2BwtXFLWOA67ZfNWftiY=",
         version = "v0.13.0",
@@ -1704,7 +1704,7 @@ def _go_dependencies():
         importpath = "golang.org/x/sync",
         patch_args = ["-p1"],
         patches = [
-            "@io_kythe//third_party/go:add_export_license.patch",
+            base_workspace + "//third_party/go:add_export_license.patch",
         ],
         sum = "h1:zxkM55ReGkDlKSM+Fu41A+zmbZuaPVbGMzvvdUPznYQ=",
         version = "v0.4.0",
@@ -1715,7 +1715,7 @@ def _go_dependencies():
         importpath = "golang.org/x/sys",
         patch_args = ["-p1"],
         patches = [
-            "@io_kythe//third_party/go:add_export_license.patch",
+            base_workspace + "//third_party/go:add_export_license.patch",
         ],
         sum = "h1:DBdB3niSjOA/O0blCZBqDefyWNYveAYMNF1Wum0DYQ4=",
         version = "v0.18.0",
@@ -1733,7 +1733,7 @@ def _go_dependencies():
         importpath = "golang.org/x/text",
         patch_args = ["-p1"],
         patches = [
-            "@io_kythe//third_party/go:add_export_license.patch",
+            base_workspace + "//third_party/go:add_export_license.patch",
         ],
         sum = "h1:ScX5w1eTa3QqT8oi6+ziP7dTV1S2+ALU0bI+0zXKWiQ=",
         version = "v0.14.0",
@@ -1764,7 +1764,7 @@ def _go_dependencies():
         sha256 = "9f20a20f29f4008d797a8be882ef82b69cf8f7f2b96dbdfe3814c57d8280fa4b",
         strip_prefix = "tools-0.7.0",
         patches = [
-            "@io_kythe//third_party/go:add_export_license.patch",
+            base_workspace + "//third_party/go:add_export_license.patch",
             # deletegopls removes the gopls subdirectory. It contains a nested
             # module with additional dependencies. It's not needed by rules_go.
             # releaser:patch-cmd rm -rf gopls
@@ -1775,15 +1775,15 @@ def _go_dependencies():
         patch_args = ["-p1"],
     )
 
-def _bindings():
+def _bindings(base_workspace):
     native.bind(
         name = "vnames_config",
-        actual = "@io_kythe//kythe/data:vnames_config",
+        actual = base_workspace + "//kythe/data:vnames_config",
     )
 
     native.bind(
         name = "libuuid",
-        actual = "@io_kythe//third_party:libuuid",
+        actual = base_workspace + "//third_party:libuuid",
     )
 
     native.bind(
@@ -1793,7 +1793,7 @@ def _bindings():
 
     native.bind(
         name = "guava",  # required by @com_google_protobuf
-        actual = "@io_kythe//third_party/guava",
+        actual = base_workspace + "//third_party/guava",
     )
 
     native.bind(
@@ -1812,18 +1812,21 @@ def _bindings():
         actual = "@maven//:com_google_errorprone_error_prone_annotations",
     )
 
-def kythe_dependencies():
+def kythe_dependencies(base_workspace = "@io_kythe"):
     """Defines external repositories for Kythe dependencies.
 
-    Call this once in your WORKSPACE file to load all @io_kythe dependencies.
+    Call this once in your WORKSPACE file to load all dependencies.
+    
+    Args:
+        base_workspace: The workspace prefix to use for kythe resources (default: "@io_kythe")
     """
     bazel_skylib_workspace()
-    _common_dependencies()
-    _cc_dependencies()
-    _go_dependencies()
-    _java_dependencies()
+    _common_dependencies(base_workspace)
+    _cc_dependencies(base_workspace)
+    _go_dependencies(base_workspace)
+    _java_dependencies(base_workspace)
 
-    _bindings()
+    _bindings(base_workspace)
     _rule_dependencies()
     hedron_compile_commands_setup()
 
